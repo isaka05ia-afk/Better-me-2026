@@ -1,0 +1,88 @@
+name: Publicera Better Me
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - run: npm test
+
+      - name: Bygg appen
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          npm run build -- --base="/${REPO_NAME}/"
+
+      - name: Anpassa offline-stöd
+        run: |
+          python3 - <<'PY'
+          import os, json, re
+          from pathlib import Path
+
+          root = Path("dist")
+          base = "/" + os.environ["GITHUB_REPOSITORY"].split("/")[1] + "/"
+
+          for p in (root / "assets").glob("*.js"):
+              text = p.read_text()
+              text = text.replace('"/sw.js"', json.dumps(base + "sw.js"))
+              text = text.replace("'/sw.js'", json.dumps(base + "sw.js"))
+              text = text.replace("/icon-192.png", base + "icon-192.png")
+              p.write_text(text)
+
+          manifest = root / "manifest.webmanifest"
+          data = json.loads(manifest.read_text())
+          for field in ["id", "start_url", "scope"]:
+              data[field] = base
+          for icon in data["icons"]:
+              icon["src"] = base + icon["src"].lstrip("/")
+          manifest.write_text(json.dumps(data, ensure_ascii=False))
+
+          sw = root / "sw.js"
+          text = sw.read_text()
+          assets = [
+              base + p.relative_to(root).as_posix()
+              for p in root.rglob("*")
+              if p.is_file() and p.name != "sw.js"
+          ]
+          text = re.sub(
+              r"const ASSETS=.*?;",
+              lambda _: "const ASSETS=" + json.dumps(assets) + ";",
+              text,
+              count=1
+          )
+          text = text.replace("'/index.html'", json.dumps(base + "index.html"))
+          sw.write_text(text)
+          PY
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Publicera
+        id: deployment
+        uses: actions/deploy-pages@v4
