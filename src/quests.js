@@ -1,4 +1,4 @@
-import {key,dateAgo} from './model.js';
+import {key,dateAgo} from './model.js';import {impossibleQuests,sinQuests} from './bossCatalog.js';
 const task=(id,label,target=1,day=null)=>({id,label,target,day});
 export const quests=[
  {id:'november',name:'No Nut November',icon:'👑',color:'#ceb1ff',duration:30,season:'november',tag:'Säsongsuppdrag',description:'Ett frivilligt mål att avstå från onani under november. Separat från porrfrihet och utan påstådda hälsofördelar.',rule:'1–30 november. Bekräfta varje dag själv och gör fyra korta reflektioner. Om du börjar mitt i månaden får du bara fylla i tidigare dagar som du faktiskt kan bekräfta.',tasks:[task('goal','Jag höll mitt personliga mål denna dag',30),task('reflect','Jag reflekterade kort över vad som hjälpte',4)]},
@@ -17,7 +17,7 @@ export const quests=[
  {id:'comeback',name:'Comeback Chapter',icon:'🔥',color:'#efb28d',duration:3,tag:'Börja igen',description:'En tredagars nystart efter en tuff period. Inget avsteg krävs för att få börja.',rule:'Välj ett minimål dag 1, prova det dag 2 och utvärdera vänligt dag 3. Tidigare framsteg finns kvar.',tasks:[task('choose','Dag 1: valde ett litet mål som känns möjligt',1,0),task('try','Dag 2: provade mitt minimål utan krav på perfektion',1,1),task('learn','Dag 3: skrev vad som hjälpte och vad jag vill ändra',1,2)]},
  {id:'curiosity',name:'Curiosity Sprint',icon:'🔭',color:'#a4d8e4',duration:14,tag:'Lärande',description:'Följ en fråga du är nyfiken på i två veckor.',rule:'Sex lärstunder, tre förklaringar med egna ord och en liten tillämpning. Du väljer ämnet.',tasks:[task('learn','Ägnade minst tio minuter åt mitt valda ämne',6),task('explain','Förklarade en sak med egna ord, för mig själv eller någon annan',3),task('apply','Använde något jag lärt mig i ett litet exempel')]},
  {id:'weekend',name:'Weekend Unlocked',icon:'🎒',color:'#d3ce96',duration:2,tag:'Min äventyrshelg',description:'Två dagar med lite mer avsikt. Kan startas vilken veckodag som helst.',rule:'Planera en liten upplevelse, gör den, lägg undan skärmen en stund och minns något du uppskattade. Ingen kostnad eller resa krävs.',tasks:[task('plan','Dag 1: valde en enkel upplevelse',1,0),task('do','Dag 2: genomförde upplevelsen på min nivå',1,1),task('screen','Dag 2: lade undan skärmen under en stund',1,1),task('remember','Dag 2: noterade ett ögonblick jag uppskattade',1,1)]}
-];
+,...impossibleQuests,...sinQuests];
 export const questById=id=>quests.find(q=>q.id===id);
 export function addDays(date,n){const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+n);return key(d)}
 export function dayIndex(run,date){const a=new Date(run.start+'T12:00:00'),b=new Date(date+'T12:00:00');return Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/86400000)}
