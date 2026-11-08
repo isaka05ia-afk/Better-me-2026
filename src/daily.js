@@ -1,0 +1,35 @@
+export const dailyPool=[
+ ['tiny-story','Tre meningar, en historia','Skriv en miniberättelse med början, vändning och slut – tre meningar räcker.','3 min','✍️'],
+ ['five-things','Fem saker på rätt plats','Plocka undan fem saker och ge dig själv en liten nystart.','2 min','🧺'],
+ ['kind-message','En vänlig rad','Skicka ett kort vänligt meddelande till någon. Inget svar behövs för att klara uppdraget.','2 min','💌'],
+ ['window','Byt perspektiv','Lämna skärmen och lägg märke till fem detaljer vid ett fönster eller utanför.','3 min','🌿'],
+ ['future','En rad till framtiden','Skriv en mening till ditt framtida jag om vad du vill ge mer plats åt.','2 min','🔮'],
+ ['draw','Rita utan sudd','Rita ett vanligt föremål i två minuter utan att sudda. Resultatet får bli precis som det blir.','2 min','🎨'],
+ ['read','Ett litet läsäventyr','Läs två sidor i valfri bok, eller lyssna i fem minuter.','5 min','📖'],
+ ['first-step','Öppna dörren till uppgiften','Välj något du skjutit upp och gör bara dess första lilla steg.','3 min','🗝️'],
+ ['thank','Ett konkret tack','Tacka någon för en specifik sak, muntligt eller i ett meddelande.','2 min','🤝'],
+ ['paper-plane','Papperspilot','Vik ett pappersflygplan eller en annan enkel pappersfigur. Använd papper du redan har.','5 min','🛩️'],
+ ['sound','Samla tre ljud','Lägg undan skärmen och lyssna efter tre olika ljud. Beskriv dem med ett ord var.','2 min','🎧'],
+ ['desk','En lugn liten yta','Ordna en yta som är ungefär lika stor som ett papper.','3 min','🏡'],
+ ['idea','En oväntad uppfinning','Välj två vardagsföremål och skissa en påhittad uppfinning som kombinerar dem.','5 min','💡'],
+ ['tomorrow','Gör morgondagen lättare','Förbered en liten sak du behöver i morgon.','3 min','🎒'],
+ ['breath','En stund utan nästa steg','Lägg undan telefonen och andas i din egen lugna takt en liten stund.','2 min','☁️'],
+ ['photo','Se något nytt','Ta en bild av en oväntad detalj eller skissa den. Du behöver inte dela den.','3 min','📷'],
+ ['learn','En fråga, ett svar','Välj en liten fråga du är nyfiken på och hitta ett begripligt svar.','5 min','🔭'],
+ ['playlist','En låt, full närvaro','Lyssna på en låt utan att samtidigt scrolla eller byta aktivitet.','5 min','🎵'],
+ ['stretch','En mjuk paus','Lämna skärmen och gör några lugna rörelser som känns bra för din kropp.','2 min','🌤️'],
+ ['remember','En sak jag redan gjort','Skriv ner något du lyckats med, stort eller litet, och vad som hjälpte dig.','3 min','🏆'],
+ ['words','Tre nya namn','Hitta på tre fantasifulla namn på saker i rummet.','2 min','🪄'],
+ ['focus','Ett femminutersfokus','Gör en vald uppgift i fem minuter med telefonen undanlagd.','5 min','⏳'],
+ ['care','Gör en liten omtänksam sak','Välj en liten handling som gör din eller någon annans vardag lättare.','3 min','💚'],
+ ['map','Minikarta','Rita en liten karta över ett verkligt eller påhittat rum. Lägg till en hemlig dörr.','5 min','🗺️'],
+ ['why','Mitt varför idag','Skriv en kort mening om varför en av dina vanor är viktig för dig.','2 min','🧭'],
+ ['offline','En skärmfri lucka','Lägg undan telefonen i fem minuter och välj något annat att göra.','5 min','📵'],
+ ['comic','En ruta, en känsla','Rita en enkel seriefigur som visar en känsla. Streckgubbar räknas.','3 min','💬'],
+ ['clear','Färre små störningar','Stäng av en onödig notis eller lägg undan en sak som stör ditt fokus.','2 min','🔕'],
+ ['curiosity','En ny vinkel','Skriv tre frågor du skulle vilja ställa till en person, verklig eller påhittad.','3 min','❔'],
+ ['dragon','Drakens lilla skatt','Skriv tre små saker som du uppskattar just idag.','2 min','🐉']
+].map(([id,title,description,time,icon])=>({id,title,description,time,icon}));
+export function dailyFor(date,entry){const saved=dailyPool.find(x=>x.id===entry?.id);if(saved)return saved;const d=new Date(date+'T12:00:00');const day=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000);return dailyPool[((day%dailyPool.length)+dailyPool.length)%dailyPool.length]}
+export function markDaily(data,date,done){const challenge=dailyFor(date,data.dailyChallenges?.[date]);return {...data,dailyChallenges:{...data.dailyChallenges,[date]:{id:challenge.id,done}}}}
+export const dailyXP=data=>Object.values(data.dailyChallenges||{}).filter(x=>x.done).length*10;
