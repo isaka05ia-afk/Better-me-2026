@@ -6,3 +6,6 @@ test('streak spans months and accepts an unfinished today',()=>{const s=initial(
 test('removing a habit preserves historical XP and streak',()=>{const s=initial();s.habits[0].archived=true;s.checks={'2026-11-01':['start-0']};assert.equal(validate(s),s);assert.equal(due(s.habits[0],'2026-11-01'),false);assert.equal(streaks(s,'2026-11-01').current,1)});
 test('malformed backups and unknown completions are rejected',()=>{const s=initial();s.checks={'2026-11-01':['unknown']};assert.throws(()=>validate(s));assert.throws(()=>validate({version:1}));const t=initial();t.habits[0].color='url(external)';assert.throws(()=>validate(t))});
 test('custom schedule respects weekday and creation date',()=>{const h={...initial().habits[0],created:'2026-11-01',days:[1]};assert.equal(due(h,'2026-11-02'),true);assert.equal(due(h,'2026-11-03'),false);assert.equal(due(h,'2026-10-26'),false)});
+
+test('avoidance defaults are separate and retained in backups',()=>{const s=initial();assert.equal(s.habits[2].mode,'avoid');assert.equal(s.habits[3].mode,'avoid');assert.equal(s.habits[0].mode,'build');assert.equal(validate(JSON.parse(JSON.stringify(s))).habits[3].mode,'avoid')});
+test('unknown tracking mode is rejected',()=>{const s=initial();s.habits[0].mode='invalid';assert.throws(()=>validate(s))});
